@@ -1,0 +1,10 @@
+﻿  Landscape.cpp
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(88): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(270): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(271): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(272): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(276): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(277): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(278): warning C4244: аргумент: преобразование "float" в "unsigned int", возможна потеря данных
+c:\users\родион\documents\visual studio 2015\projects\sfml_test_opnegl\sfml_test_opnegl\my_lib\landscape.cpp(160): warning C4715: Landscape::LoadHeightMap: значение возвращается не при всех путях выполнения
+  SFML_TEST_OPNEGL.vcxproj -> C:\Users\Родион\Documents\Visual Studio 2015\Projects\SFML_TEST_OPNEGL\Debug\SFML_TEST_OPNEGL.exe
