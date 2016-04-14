@@ -3,11 +3,13 @@
 
 #include <SFML\Graphics.hpp>
 #include <GL\glew.h>
+#include <iostream>
 class Textur
 {
 public:
 	Textur();
-	void loadFromFile(const std::string &filename);
+	Textur(const std::string &filename, bool flipVeticaly = false, bool isSkaybox = false);
+	void loadFromFile(const std::string &filename, bool flipVeticaly = false, bool isSkaybox = false);
 	~Textur();
 	void Bind();
 	void Unbind();

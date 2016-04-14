@@ -28,7 +28,7 @@ Transform::~Transform()
 	glm::mat4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
 
 	glm::mat4 forR = posMatrix * rotateMatrix * scaleMatrix;
-	
+
 	return forR;
 }
 
@@ -53,16 +53,19 @@ Transform::~Transform()
 void Transform::SetPos(glm::vec3 & pos)
 {
 	m_pos = pos;
+	m_matrix_t = GetModel();
 }
 
  void Transform::SetRotate(glm::vec3 & rotate)
 {
 	m_rotate = rotate;
+	m_matrix_t = GetModel();
 }
 
  void Transform::SetScale(glm::vec3 & scale)
 {
 	m_scale = scale;
+	m_matrix_t = GetModel();
 }
 
  glm::mat4 Transform::GetMVP(const Camera & camera) const
@@ -71,4 +74,9 @@ void Transform::SetPos(glm::vec3 & pos)
 	 glm::mat4 M = GetModel();
 
 	 return VP * M;//camera.GetViewProjection() * GetModel();
+ }
+
+ void Transform::SetModel(glm::mat4 model)
+ {
+	 m_matrix_t = model;
  }

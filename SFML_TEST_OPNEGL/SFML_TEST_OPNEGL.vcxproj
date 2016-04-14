@@ -20,24 +20,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="My_lib\BasicShader.cpp" />
     <ClCompile Include="My_lib\Camera.cpp" />
     <ClCompile Include="My_lib\Debug_Panel.cpp" />
     <ClCompile Include="My_lib\Display.cpp" />
-    <ClCompile Include="My_lib\Landscape.cpp" />
     <ClCompile Include="My_lib\Mesh.cpp" />
     <ClCompile Include="My_lib\obj_loader.cpp" />
-    <ClCompile Include="My_lib\shader.cpp" />
+    <ClCompile Include="My_lib\Player.cpp" />
+    <ClCompile Include="My_lib\RenderObject.cpp" />
+    <ClCompile Include="My_lib\Shader.cpp" />
+    <ClCompile Include="My_lib\Skaybox.cpp" />
+    <ClCompile Include="My_lib\Terrain.cpp" />
     <ClCompile Include="My_lib\Textur.cpp" />
     <ClCompile Include="My_lib\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="My_lib\BasicShader.h" />
     <ClInclude Include="My_lib\Camera.h" />
     <ClInclude Include="My_lib\Debug_Panel.h" />
     <ClInclude Include="My_lib\Display.h" />
-    <ClInclude Include="My_lib\Landscape.h" />
     <ClInclude Include="My_lib\Mesh.h" />
     <ClInclude Include="My_lib\obj_loader.h" />
-    <ClInclude Include="My_lib\shader.h" />
+    <ClInclude Include="My_lib\Player.h" />
+    <ClInclude Include="My_lib\RenderObject.h" />
+    <ClInclude Include="My_lib\Shader.h" />
+    <ClInclude Include="My_lib\Skaybox.h" />
+    <ClInclude Include="My_lib\Terrain.h" />
     <ClInclude Include="My_lib\Textur.h" />
     <ClInclude Include="My_lib\Transform.h" />
   </ItemGroup>
@@ -117,8 +125,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\lib\SFML;.\lib\GL;.\lib\SDL;.\lib\ATB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glu32.lib;glew32.lib;glew32s.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-graphics-d.lib;OpenGL32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\lib\SFML;.\lib\GL;.\lib\SDL;.\lib\ATB;.\lib\ASSIMP;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glu32.lib;glew32.lib;glew32s.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-graphics-d.lib;assimp-vc130-mtd.lib;OpenGL32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,12 +153,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>.\lib\SFML;.\lib\GL;.\lib\SDL;.\lib\ATB;.\lib\ASSIMP;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glu32.lib;glew32.lib;glew32s.lib;sfml-window.lib;sfml-system.lib;sfml-graphics.lib;OpenGL32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;assimp-vc130-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

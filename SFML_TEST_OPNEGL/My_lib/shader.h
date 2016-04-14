@@ -2,33 +2,29 @@
 #define SHADER_H
 
 #include <string>
+#include <fstream>
+#include <iostream>
 #include <GL/glew.h>
 #include "transform.h"
 #include "Camera.h"
+class Shader {
 
-class Shader
-{
 public:
-	Shader(const std::string& fileName);
 	Shader();
+	~Shader();
+	void loadFromFile(const std::string &fileName);
 	void Bind();
-	void Update(const Transform& transform, const Camera& camera);
 	void UnBind();
-	virtual ~Shader();
+	virtual void Update();
 protected:
-private:
 	static const unsigned int NUM_SHADERS = 2;
-	static const unsigned int NUM_UNIFORMS = 3;
-	/*void operator=(const Shader& shader) {}
-	Shader(const Shader& shader) {}*/
-
 	std::string LoadShader(const std::string& fileName);
 	void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
 	GLuint CreateShader(const std::string& text, unsigned int type);
 
 	GLuint m_program;
-	GLuint m_shaders[NUM_SHADERS];
-	GLuint m_uniforms[NUM_UNIFORMS];
+	GLuint m_shaders [NUM_SHADERS];           // Vertex and Fragment Shader
+	std::vector<GLuint> m_uniforms;
+	virtual void Init()=0;
 };
-
-#endif // SHADER_H
+#endif // !SHADER_H

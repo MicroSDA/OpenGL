@@ -18,6 +18,7 @@ public:
 	void Clear(GLfloat r = 0.0f, GLfloat g = 0.0f, GLfloat b = 0.0f, GLfloat a = 1.0f);
     sf::RenderWindow *GetHandle();
     sf::RenderWindow &GetReference();
+	void Resize();
 private:
 	sf::RenderWindow window;
 	sf::ContextSettings settings;

@@ -1,116 +1,245 @@
+#include <assert.h>
+
 #include "Mesh.h"
 
-
-
-Mesh::Mesh(const std::string & fileName)
+Mesh::MeshEntry::MeshEntry()
 {
-	InitMesh(OBJModel(fileName).ToIndexedModel());
+    VB = INVALID_OGL_VALUE;
+    IB = INVALID_OGL_VALUE;
+    NumIndices = 0;
+    MaterialIndex = INVALID_MATERIAL;
 }
 
-Mesh::~Mesh()
+Mesh::MeshEntry::~MeshEntry()
 {
-	glDeleteBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
-	glDeleteVertexArrays(1, &m_vertexArrayObject);
+    if (VB != INVALID_OGL_VALUE){
+        glDeleteBuffers(1, &VB);
+    }
+
+    if (IB != INVALID_OGL_VALUE){
+        glDeleteBuffers(1, &IB);
+    }
 }
 
-void Mesh::InitMesh(const IndexedModel & model)
+bool Mesh::MeshEntry::Init(const std::vector<Vertex>& Vertices,
+                      const std::vector<unsigned int>& Indices)
 {
-	m_numIndices = model.indices.size();
+    NumIndices = Indices.size();
 
+    glGenBuffers(1, &VB);
+        glBindBuffer(GL_ARRAY_BUFFER, VB);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*Vertices.size(),
+                    &Vertices[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &IB);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*NumIndices,
+                    &Indices[0], GL_STATIC_DRAW);
+
+////////////////////////////////////////////////////////////////////
 	
-	glGenVertexArrays(1, &m_vertexArrayObject);
-	glBindVertexArray(m_vertexArrayObject);
 
-	glGenBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[POSITION_VB]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(model.positions[0]) * model.positions.size(), &model.positions[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    return true;
+}
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[TEXCOORD_VB]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(model.texCoords[0]) * model.texCoords.size(), &model.texCoords[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+void Mesh::MeshEntry::Init_test(const std::vector<Vertex>& Vertices)
+{
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[NORMAL_VB]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(model.normals[0]) * model.normals.size(), &model.normals[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexArrayBuffers[INDEX_VB]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(model.indices[0]) * model.indices.size(), &model.indices[0], GL_STATIC_DRAW);
+void Mesh::Clear()
+{
+    for (unsigned int i = 0; i < m_Textures.size(); i++){
+        SAFE_DELETE(m_Textures[i]);
+    }
+}
 
-	glBindVertexArray(0);
+bool Mesh::LoadMesh(const std::string& Filename)
+{
+    // Удаляем данные предыдущей модели (если она была загружена)
+    Clear();
 
+    bool Ret = false;
+
+    Assimp::Importer Importer;
+
+    const aiScene* pScene = Importer.ReadFile(Filename.c_str(),
+                                    aiProcess_Triangulate | aiProcess_GenSmoothNormals|
+                                    aiProcess_FlipUVs );
+
+    if (pScene){
+        Ret = InitFromScene(pScene, Filename);
+    }
+    else {
+        printf("Error parsing '%s': '%s'\n", Filename.c_str(), Importer.GetErrorString());
+    }
+
+    return Ret;
+}
+
+bool Mesh::InitFromScene(const aiScene* pScene, const std::string& Filename)
+{
+    m_Entries.resize(pScene->mNumMeshes);
+    m_Textures.resize(pScene->mNumMaterials);
+
+    // Инициализируем меши один за другим
+    for (unsigned int i = 0; i < m_Entries.size(); i++){
+        const aiMesh* paiMesh = pScene->mMeshes[i];
+        InitMesh(i, paiMesh);
+    }
+
+    return InitMaterials(pScene, Filename);
+}
+
+void Mesh::InitMesh(unsigned int Index, const aiMesh* paiMesh)
+{
+    m_Entries[Index].MaterialIndex = paiMesh->mMaterialIndex;
+
+    std::vector<Vertex> Vertices;
+    std::vector<unsigned int> Indices;
+
+    const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
+    for (unsigned int i = 0; i< paiMesh->mNumVertices; i++){
+        const aiVector3D* pPos      = &(paiMesh->mVertices[i]);
+        const aiVector3D* pNormal   = &(paiMesh->mNormals[i]);
+        const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ?
+                            &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
+
+        Vertex v(sf::Vector3f(pPos->x, pPos->y, pPos->z),
+			sf::Vector2f(pTexCoord->x,pTexCoord->y),
+			sf::Vector3f(pNormal->x, pNormal->y, pNormal->z));
+        Vertices.push_back(v);
+    }
+
+    for (unsigned int i = 0; i < paiMesh->mNumFaces; i++){
+        const aiFace& Face = paiMesh->mFaces[i];
+		for (int l = 0; l < Face.mNumIndices; l++) {
+			Indices.push_back(Face.mIndices[l]);
+		}
+    }
+
+    m_Entries[Index].Init(Vertices, Indices);
+	std::vector<Vertex>().swap(Vertices);
+}
+
+bool Mesh::InitMaterials(const aiScene* pScene, const std::string& Filename)
+{
+    // Извлекаем директорию из полного имени файла
+    std::string::size_type SlashIndex = Filename.find_last_of("/");
+    std::string Dir;
+
+    if (SlashIndex == std::string::npos){
+        Dir = ".";
+    }
+    else if (SlashIndex == 0){
+        Dir = "/";
+    }
+    else {
+        Dir = Filename.substr(0, SlashIndex);
+    }
+
+    bool Ret = true;
+
+    // Инициализируем материал
+    for (unsigned int i = 0; i< pScene->mNumMaterials; i++){
+        const aiMaterial* pMaterial = pScene->mMaterials[i];
+
+        m_Textures[i] = NULL;
+    if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0){
+            aiString Path;
+
+            if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path,
+                                NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
+                std::string FullPath = Dir + "/" + Path.data;
+                m_Textures[i] = new Textur(FullPath.c_str());
+            }
+       }
+        // Загружаем белую текстуру если модель не имеет собственной
+   
+    }
+
+    return Ret;
 }
 
 void Mesh::Draw()
 {
-	texture.Bind();
-	shader->Bind();
-	shader->Update(transform,*camera);
-	//glColor3f(1, 1, 1);
-	glBindVertexArray(m_vertexArrayObject);
-	glDrawElementsBaseVertex(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0, 0);
-	glBindVertexArray(0);
-	shader->UnBind();
-	texture.Unbind();
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    for (unsigned int i = 0; i < m_Entries.size(); i++){
+        glBindBuffer(GL_ARRAY_BUFFER, m_Entries[i].VB);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Entries[i].IB);
+
+        const unsigned int MaterialIndex = m_Entries[i].MaterialIndex;
+
+        if (MaterialIndex < m_Textures.size() && m_Textures[MaterialIndex]){
+				glDisable(GL_CULL_FACE);
+				m_Textures[MaterialIndex]->Bind();
+				m_shader->Bind();
+				m_shader->Update(m_transform, *m_camera);
+				glDrawElements(GL_TRIANGLES, m_Entries[i].NumIndices, GL_UNSIGNED_INT, 0);
+
+				glFrontFace(GL_BACK);
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
+        }
+
 	
+    }
+
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
 }
 
-void Mesh::SetShader(Shader & shader)
+void Mesh::SetShader(BasicShader & shader)
 {
-	this->shader = &shader;
+	m_shader = &shader;
+
+}
+
+void Mesh::AtachCamera(Camera & camera)
+{
+	m_camera = &camera;
 }
 
 void Mesh::SetPosition(GLfloat x, GLfloat y, GLfloat z)
 {
-	transform.SetPos(glm::vec3(x,y,z));
-
-}
-
-void Mesh::Move(GLfloat x, GLfloat y, GLfloat z)
-{
-	transform.SetPos(glm::vec3(transform.GetPos().x + x,
-		transform.GetPos().y = transform.GetPos().y + y,
-		transform.GetPos().z = transform.GetPos().y + z));
-}
-
-void Mesh::SetScale(GLfloat x)
-{
-	
-	transform.SetScale(glm::vec3(x, x, x));
-}
-
-void Mesh::SetRotaited(GLfloat x, GLfloat y, GLfloat z)
-{
-	transform.GetRotate().x = x;
-	transform.GetRotate().y = y;
-	transform.GetRotate().z = z;
-}
-
-void Mesh::AtachCamera( Camera & camera)
-{
-	this->camera = &camera;
+	m_transform.SetPos(glm::vec3(x, y, z));
 }
 
 sf::Vector3f Mesh::GetPosition()
 {
-	return sf::Vector3f(transform.GetPos().x, transform.GetPos().y, transform.GetPos().z);
+	return sf::Vector3f(m_transform.GetPos().x, m_transform.GetPos().x, m_transform.GetPos().z);
 }
 
-sf::Vector3f Mesh::GetScale()
+void Mesh::SetRotation(GLfloat x, GLfloat y, GLfloat z)
 {
-	return sf::Vector3f(transform.GetScale().x, transform.GetScale().y, transform.GetScale().z);
+	m_transform.SetRotate(glm::vec3(x, y, z));
 }
 
-sf::Vector3f Mesh::GetRotaited()
+sf::Vector3f Mesh::GetRotation()
 {
-	return sf::Vector3f(transform.GetRotate().x, transform.GetRotate().y, transform.GetRotate().z);
+	return sf::Vector3f(m_transform.GetRotate().x, m_transform.GetRotate().y, m_transform.GetRotate().z);
 }
 
-void Mesh::loadTextureFromFile(const std::string &filename)
+void Mesh::SetScale(GLfloat size)
 {
-	texture.loadFromFile(filename);
+	m_transform.SetScale(glm::vec3(size, size, size));
+}
+
+GLfloat Mesh::GetScale()
+{
+	return GLfloat(m_transform.GetScale().x);
+}
+
+void Mesh::SetTransform(Transform & transform)
+{
 }
 

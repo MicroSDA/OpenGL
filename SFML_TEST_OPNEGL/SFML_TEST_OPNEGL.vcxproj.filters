@@ -21,13 +21,7 @@
     <ClCompile Include="My_lib\Display.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="My_lib\Mesh.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="My_lib\obj_loader.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="My_lib\shader.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="My_lib\Transform.cpp">
@@ -42,7 +36,25 @@
     <ClCompile Include="My_lib\Textur.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="My_lib\Landscape.cpp">
+    <ClCompile Include="My_lib\Skaybox.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\Terrain.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\Shader.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\BasicShader.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\Player.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\Mesh.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="My_lib\RenderObject.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,13 +62,7 @@
     <ClInclude Include="My_lib\Display.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="My_lib\Mesh.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="My_lib\obj_loader.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="My_lib\shader.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="My_lib\Transform.h">
@@ -71,7 +77,25 @@
     <ClInclude Include="My_lib\Textur.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="My_lib\Landscape.h">
+    <ClInclude Include="My_lib\Skaybox.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\Terrain.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\Shader.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\BasicShader.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\Player.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\Mesh.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="My_lib\RenderObject.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

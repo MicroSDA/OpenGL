@@ -23,11 +23,14 @@ public:
 	 void SetScale(glm::vec3 &scale);
 	 glm::mat4 GetMVP(const Camera& camera) const;
 
+	 void SetModel(glm::mat4 model);
+
 private:
 
 	glm::vec3 m_pos;
 	glm::vec3 m_rotate;
 	glm::vec3 m_scale;
+	glm::mat4 m_matrix_t;
 };
 
 #endif // TRANSFORM_H
